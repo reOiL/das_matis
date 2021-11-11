@@ -6,7 +6,10 @@ require fio
 // options debugger            // uncomment for debug in VS Code
 // require daslib/debug        // uncomment for debug in VS Code
 
-var sound: SoundHandle
+var
+    winSound: SoundHandle
+    sound: SoundHandle
+
 var playingSound: PlayingSoundHandle
 
 [decs_template]
@@ -40,6 +43,8 @@ def private load_resources()
     okImage |> make_image_color_transparent(get_pixel(okImage, 0, 0))
     failedImage <- create_managed_image("img/icon/failed.png")
     failedImage |> make_image_color_transparent(get_pixel(failedImage, 0, 0))
+
+    winSound <- create_managed_sound("sound/win.wav")
 
 def private create_drum_entities()
     let size = float2(150, 40)
@@ -210,6 +215,7 @@ def draw_decals_es(success: bool; position: float2)
 def game_over_es(var game_over: bool&)
     if !game_over && !is_playing(playingSound)
         game_over = true
+        winSound |> play_sound
 
 [decs(stage=draw)]
 def draw_game_over(game_over: bool)
