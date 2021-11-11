@@ -1,7 +1,8 @@
 require daslib/media
 require daslib/decs_boost
 require conf/level
-require ecs/editmode_ecs
+require fio
+
 // options debugger            // uncomment for debug in VS Code
 // require daslib/debug        // uncomment for debug in VS Code
 
@@ -52,6 +53,7 @@ def initialize(is_hard_reload: bool)
 
     sound = create_managed_sound(level1.sound)
     playingSound = sound |> play_sound()
+    // enable_edit_mode()
     commit()
 
 def enable_edit_mode()
@@ -60,6 +62,12 @@ def enable_edit_mode()
 
     query <| $ (eid: EntityId; note_color: uint)
         delete_entity(eid)
+
+    create_entity <| @ ( eid, cmp )
+        cmp |> set("eid", eid)
+        cmp |> set("edit_mode", true)
+    playingSound |> set_sound_play_pos(sound.duration)
+    commit()
 
 [export]
 def act(dt: float)
@@ -145,3 +153,76 @@ def draw
         text = "Progress: {playPos} of {sound.duration}"
     text_out(20, 20, text, 0xFFFFFF)
     decs_stage("draw")
+
+var edit_mode_tb: array<NoteLayer>
+
+def add_to_edit_mode_table()
+    var exist = false
+    var timeCode = get_sound_play_pos(playingSound)
+    var layer = [[NoteLayer timeCode=timeCode, notes=[[ auto
+            [[Note _type = BlockType Empty]];
+            [[Note _type = BlockType Empty]];
+            [[Note _type = BlockType Empty]];
+            [[Note _type = BlockType Empty]]
+        ]]
+    ]]
+
+    var len = length(edit_mode_tb)
+    var modifOld = false
+    if len > 0 && (timeCode - edit_mode_tb[len - 1].timeCode) <= 0.03
+        timeCode = edit_mode_tb[len - 1].timeCode
+        layer = edit_mode_tb[len - 1]
+        modifOld = true
+
+    query <| $ (drum: DrumPad; drum_index: int)
+        if !drum.pressed
+            return
+
+        if drum.beforePressed
+            return
+
+        layer.notes[drum_index]._type = BlockType Exist
+        exist = true
+
+    if !exist || modifOld
+        return
+    //todo: calc from velocity
+    //todo: compress note to one simple if time isn't large
+
+    edit_mode_tb |> push(layer)
+
+def flush_edit_mode_table()
+    var str = "var level1_layers <- [\{ auto\n"
+    for i in iter_range(edit_mode_tb)
+        var node = edit_mode_tb[i]
+        // -1.91f calculate by formula t = s/v(where s lv velocity)
+        str += "    [[NoteLayer timeCode={node.timeCode}-1.91f, notes=[[ auto\n"
+        for j in iter_range(node.notes)
+            str += "            [[Note _type = BlockType {node.notes[j]._type}]]"
+            if j != 3
+                str += ";"
+            str += "\n"
+        str += "        ]]\n"
+        str += "    ]]"
+        if i != length(edit_mode_tb) - 1
+            str += ";"
+        str += "\n"
+    str += "}]\n";
+    var ff = fopen("editmode.gen_das", "w")
+    ff |> fprint(str)
+    ff |> fclose
+/*
+Edit mode
+*/
+[decs(stage = input)]
+def edit_mode_input_es(edit_mode: bool)
+    if get_key(VK_SPACE)
+        playingSound = sound |> play_sound()
+
+    if get_key(VK_F3)
+        flush_edit_mode_table()
+    add_to_edit_mode_table()
+
+[decs(stage = draw)]
+def edit_mode_debug_text_draw(edit_mode: bool)
+    text_out(20, 60, "Edit mode", 0xFFFFFF)
