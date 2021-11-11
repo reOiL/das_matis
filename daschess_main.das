@@ -189,13 +189,25 @@ def decal_move_es(eid: EntityId;
 def draw_decals_es(success: bool; position: float2)
     draw_image(success ? okImage : failedImage, position.x, position.y, make_color(1f, 1f, 1f))
 
+[decs(stage=draw)]
+def draw_game_over(game_over: bool)
+    draw_text_at_center("Game Over!", int2(0, 0))
+    draw_text_at_center("Reload game(Ctrl+F5)", int2(0, 50))
+    query <| $ (stats_miss: int; stats_pass: int)
+        draw_text_at_center("Score Miss: {stats_miss}/ Pass: {stats_pass}", int2(0, 90))
+
+def private draw_text_at_center(text, pos)
+    var textSize = get_text_size(text)
+    text_out(get_screen_width() / 2 - int(textSize.x / 2f) + pos.x,
+             get_screen_height() / 2 - int(textSize.y / 2f) + pos.y,  text, 0xFFFFFF)
+
 [export]
 def draw
-    var playPos = playingSound |> get_sound_play_pos
-    var text = "No music play. Reload game(Ctrl+F5)"
-    if sound.duration > 0f
-        text = "Progress: {playPos} of {sound.duration}"
-    text_out(20, 20, text, 0xFFFFFF)
+    var gameOver = find_query <| $ (game_over: bool) { return game_over; }
+    if !gameOver && !is_playing(playingSound)
+        create_entity <| @ ( eid, cmp )
+            cmp |> set("eid", eid)
+            cmp |> set("game_over", true)
     decs_stage("draw")
 
 var edit_mode_tb: array<NoteLayer>
