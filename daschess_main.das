@@ -1,5 +1,6 @@
 require daslib/media
 require daslib/decs_boost
+require conf/level
 // options debugger            // uncomment for debug in VS Code
 // require daslib/debug        // uncomment for debug in VS Code
 
@@ -20,33 +21,6 @@ var drums <- [{ auto
     [[DrumPad key=VK_K, color=0x3ECC20, pressed=false, keyName="K" ]];
     [[DrumPad key=VK_L, color=0xEC4852, pressed=false, keyName="L" ]]
 }]
-
-enum BlockType
-    Empty
-    Exist
-
-struct Note
-    _type: BlockType
-
-struct NoteLayer
-    timeCode: float
-    notes: Note[4]
-
-struct Level
-    sound : string
-    velocity: float
-
-var level1_layers <- [{ auto
-    [[NoteLayer timeCode=2f, notes=[[ auto
-            [[Note _type = BlockType Empty]];
-            [[Note _type = BlockType Exist]];
-            [[Note _type = BlockType Exist]];
-            [[Note _type = BlockType Empty]]
-        ]]
-    ]]
-}]
-
-var level1 <- [[Level sound="sound/promo.mp3", velocity=300f]]
 
 var timeDelta = 0f
 
