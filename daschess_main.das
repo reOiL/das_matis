@@ -29,23 +29,21 @@ var
     failedImage: ImageHandle
     okImage: ImageHandle
 
-[export]
-def initialize(is_hard_reload: bool)
+def private configurate()
     set_window_title("The Mantis Game")
     set_resolution(1280, 720)
     set_font_name("fonts/Inter-SemiBold.ttf")
     set_font_size(25)
 
+def private load_resources()
     okImage <- create_managed_image("img/icon/ok.png")
-    make_image_color_transparent(okImage, get_pixel(okImage, 0, 0))
+    okImage |> make_image_color_transparent(get_pixel(okImage, 0, 0))
     failedImage <- create_managed_image("img/icon/failed.png")
-    make_image_color_transparent(failedImage, get_pixel(failedImage, 0, 0))
+    failedImage |> make_image_color_transparent(get_pixel(failedImage, 0, 0))
 
-    if !is_hard_reload
-        return
-
-    var size = float2(150, 40)
-    var startPos = float2(300, 720 - 80)
+def private create_drum_entities()
+    let size = float2(150, 40)
+    let startPos = float2(300, 720 - 80)
     for i in range(length(drums))
         create_entity <| @ ( eid, cmp )
             cmp |> set("eid", eid)
@@ -54,46 +52,61 @@ def initialize(is_hard_reload: bool)
             cmp |> set("position", startPos + float2((150 + 30) * i, 0))
             cmp |> apply_decs_template(drums[i])
 
+def private create_level_entity()
     create_entity <| @ ( eid, cmp )
         cmp |> set("eid", eid)
+        cmp |> set("game_over", false)
         cmp |> set("level_layer", 0)
         cmp |> set("level_velocity", level1.velocity)
 
+def private create_stats_entity()
     create_entity <| @ ( eid, cmp )
         cmp |> set("eid", eid)
         cmp |> set("stats_miss", 0)
         cmp |> set("stats_pass", 0)
 
-    sound = create_managed_sound(level1.sound)
-    playingSound = sound |> play_sound()
-    // enable_edit_mode()
-    commit()
+def private draw_text_at_center(text, pos)
+    var textSize = get_text_size(text)
+    text_out(get_screen_width() / 2 - int(textSize.x / 2f) + pos.x,
+             get_screen_height() / 2 - int(textSize.y / 2f) + pos.y,  text, 0xFFFFFF)
 
-def enable_edit_mode()
-    query <| $ (eid: EntityId; level_layer: int)
-        delete_entity(eid)
-
-    query <| $ (eid: EntityId; note_color: uint)
-        delete_entity(eid)
-
+def private create_edit_mode_entity()
     create_entity <| @ ( eid, cmp )
         cmp |> set("eid", eid)
-        cmp |> set("edit_mode", true)
-    playingSound |> set_sound_play_pos(sound.duration)
+        cmp |> set("edit_mode", false)
+
+/*System*/
+[export]
+def initialize(is_hard_reload: bool)
+    configurate()
+    load_resources()
+
+    if !is_hard_reload
+        return
+
+    create_drum_entities()
+    create_level_entity()
+    create_stats_entity()
+    create_edit_mode_entity()
+
+    sound = create_managed_sound(level1.sound)
+    playingSound = sound |> play_sound()
 
 [export]
 def act(dt: float)
     if get_key(VK_ESCAPE)
         schedule_quit_game()
 
-    if get_key(VK_F1)
-        enable_edit_mode()
-
     timeDelta = dt
     decs_stage("input")
     decs_stage("update")
     decs_stage("collision_update")
 
+[export]
+def draw
+    decs_stage("draw")
+
+/*DrumPad System*/
 [decs(stage = draw)]
 def draw_drumpad_es(position: float2; size: float2; drum: DrumPad)
     if drum.pressed
@@ -106,13 +119,14 @@ def input_drumpad_es(var drum: DrumPad&)
     drum.beforePressed = drum.pressed
     drum.pressed = get_key(drum.key)
 
+/*Note System*/
 [decs(stage = draw)]
 def draw_note_es(note_color: uint; position: float2; size: float2)
     fill_rect(position.x, position.y, size.x, size.y, note_color)
 
 [decs(stage = update)]
-def spawn_note_timer(level_velocity: float;
-                     var level_layer: int&)
+def note_spawer_es(level_velocity: float;
+                   var level_layer: int&)
     if uint(level_layer) >= uint(length(level1_layers))
         return
 
@@ -170,10 +184,12 @@ def note_collision_with_drum(eid: EntityId; note_index: int; position: float2; s
             query <| $ (var stats_pass: int&)
                 stats_pass++
 
+/*Stats System*/
 [decs(stage=draw)]
 def draw_stats_es(stats_miss: int; stats_pass: int)
     text_out(20, 50, "Miss: {stats_miss} / Pass: {stats_pass}", 0xFFFFFF)
 
+/*Decal System*/
 [decs(stage=update)]
 def decal_move_es(eid: EntityId;
                   success: bool;
@@ -189,30 +205,35 @@ def decal_move_es(eid: EntityId;
 def draw_decals_es(success: bool; position: float2)
     draw_image(success ? okImage : failedImage, position.x, position.y, make_color(1f, 1f, 1f))
 
+/*Game Over System*/
+[decs(stage=update)]
+def game_over_es(var game_over: bool&)
+    if !game_over && !is_playing(playingSound)
+        game_over = true
+
 [decs(stage=draw)]
 def draw_game_over(game_over: bool)
+    if !game_over
+        return
+
     draw_text_at_center("Game Over!", int2(0, 0))
     draw_text_at_center("Reload game(Ctrl+F5)", int2(0, 50))
     query <| $ (stats_miss: int; stats_pass: int)
         draw_text_at_center("Score Miss: {stats_miss}/ Pass: {stats_pass}", int2(0, 90))
 
-def private draw_text_at_center(text, pos)
-    var textSize = get_text_size(text)
-    text_out(get_screen_width() / 2 - int(textSize.x / 2f) + pos.x,
-             get_screen_height() / 2 - int(textSize.y / 2f) + pos.y,  text, 0xFFFFFF)
-
-[export]
-def draw
-    var gameOver = find_query <| $ (game_over: bool) { return game_over; }
-    if !gameOver && !is_playing(playingSound)
-        create_entity <| @ ( eid, cmp )
-            cmp |> set("eid", eid)
-            cmp |> set("game_over", true)
-    decs_stage("draw")
-
+/*Edit mode*/
 var edit_mode_tb: array<NoteLayer>
 
-def add_to_edit_mode_table()
+def private enable_edit_mode()
+    query <| $ (eid: EntityId; level_layer: int)
+        delete_entity(eid)
+
+    query <| $ (eid: EntityId; note_color: uint)
+        delete_entity(eid)
+
+    playingSound |> set_sound_play_pos(sound.duration)
+
+def private add_to_edit_mode_table()
     var exist = false
     var timeCode = get_sound_play_pos(playingSound)
     var layer = [[NoteLayer timeCode=timeCode, notes=[[ auto
@@ -240,14 +261,10 @@ def add_to_edit_mode_table()
         layer.notes[drum_index]._type = BlockType Exist
         exist = true
 
-    if !exist || modifOld
-        return
-    //todo: calc from velocity
-    //todo: compress note to one simple if time isn't large
+    if exist && !modifOld
+        edit_mode_tb |> push(layer)
 
-    edit_mode_tb |> push(layer)
-
-def flush_edit_mode_table()
+def private flush_edit_mode_table()
     var str = "var level1_layers <- [\{ auto\n"
     for i in iter_range(edit_mode_tb)
         var node = edit_mode_tb[i]
@@ -267,11 +284,16 @@ def flush_edit_mode_table()
     var ff = fopen("editmode.gen_das", "w")
     ff |> fprint(str)
     ff |> fclose
-/*
-Edit mode
-*/
+
 [decs(stage = input)]
-def edit_mode_input_es(edit_mode: bool)
+def edit_mode_input_es(var edit_mode: bool&)
+    if get_key(VK_F1)
+        enable_edit_mode()
+        edit_mode = true
+
+    if !edit_mode
+        return
+
     if get_key(VK_SPACE)
         playingSound = sound |> play_sound()
 
@@ -281,4 +303,5 @@ def edit_mode_input_es(edit_mode: bool)
 
 [decs(stage = draw)]
 def edit_mode_debug_text_draw(edit_mode: bool)
-    text_out(20, 60, "Edit mode", 0xFFFFFF)
+    if edit_mode
+        text_out(20, 60, "Edit mode", 0xFFFFFF)
