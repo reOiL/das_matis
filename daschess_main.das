@@ -25,6 +25,9 @@ var drums <- [{ auto
 }]
 
 var timeDelta = 0f
+var
+    failedImage: ImageHandle
+    okImage: ImageHandle
 
 [export]
 def initialize(is_hard_reload: bool)
@@ -32,6 +35,11 @@ def initialize(is_hard_reload: bool)
     set_resolution(1280, 720)
     set_font_name("fonts/Inter-SemiBold.ttf")
     set_font_size(25)
+
+    okImage <- create_managed_image("img/icon/ok.png")
+    make_image_color_transparent(okImage, get_pixel(okImage, 0, 0))
+    failedImage <- create_managed_image("img/icon/failed.png")
+    make_image_color_transparent(failedImage, get_pixel(failedImage, 0, 0))
 
     if !is_hard_reload
         return
@@ -137,6 +145,11 @@ def move_note_es(eid: EntityId;
 
     if int(position.y) >= get_screen_height() - int(size.y * 1.2f)
         delete_entity(eid)
+        create_entity <| @ ( eid2, cmp )
+            cmp |> set("eid", eid2)
+            cmp |> set("success", false)
+            cmp |> set("live_time", 1f)
+            cmp |> set("position", position + float2(50f, -50f))
         query <| $ (var stats_miss: int&)
             stats_miss++
 
@@ -149,12 +162,32 @@ def note_collision_with_drum(eid: EntityId; note_index: int; position: float2; s
 
         if position.y - (notePosition.y + size.y) <= 0f
             delete_entity(eid)
+            create_entity <| @ ( eid2, cmp )
+                cmp |> set("eid", eid2)
+                cmp |> set("success", true)
+                cmp |> set("live_time", 1f)
+                cmp |> set("position", position + float2(50f, -50f))
             query <| $ (var stats_pass: int&)
                 stats_pass++
 
 [decs(stage=draw)]
 def draw_stats_es(stats_miss: int; stats_pass: int)
     text_out(20, 50, "Miss: {stats_miss} / Pass: {stats_pass}", 0xFFFFFF)
+
+[decs(stage=update)]
+def decal_move_es(eid: EntityId;
+                  success: bool;
+                  var position: float2&;
+                  var live_time: float&)
+    if live_time <= 0f
+        delete_entity(eid)
+        return
+    live_time -= timeDelta
+    position.y -= 100f * timeDelta * (2f - live_time)
+
+[decs(stage=draw)]
+def draw_decals_es(success: bool; position: float2)
+    draw_image(success ? okImage : failedImage, position.x, position.y, make_color(1f, 1f, 1f))
 
 [export]
 def draw
