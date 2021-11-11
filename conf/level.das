@@ -14,11 +14,32 @@ struct Level
     velocity: float
 
 var level1_layers <- [{ auto
-    [[NoteLayer timeCode=2f, notes=[[ auto
+    [[NoteLayer timeCode=1f, notes=[[ auto
             [[Note _type = BlockType Empty]];
             [[Note _type = BlockType Exist]];
             [[Note _type = BlockType Exist]];
             [[Note _type = BlockType Empty]]
+        ]]
+    ]];
+    [[NoteLayer timeCode=2.25f, notes=[[ auto
+            [[Note _type = BlockType Exist]];
+            [[Note _type = BlockType Empty]];
+            [[Note _type = BlockType Empty]];
+            [[Note _type = BlockType Exist]]
+        ]]
+    ]];
+    [[NoteLayer timeCode=2.50f, notes=[[ auto
+            [[Note _type = BlockType Exist]];
+            [[Note _type = BlockType Empty]];
+            [[Note _type = BlockType Empty]];
+            [[Note _type = BlockType Exist]]
+        ]]
+    ]];
+    [[NoteLayer timeCode=2.75f, notes=[[ auto
+            [[Note _type = BlockType Exist]];
+            [[Note _type = BlockType Empty]];
+            [[Note _type = BlockType Empty]];
+            [[Note _type = BlockType Exist]]
         ]]
     ]]
 }]
