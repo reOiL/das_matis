@@ -72,7 +72,6 @@ def enable_edit_mode()
         cmp |> set("eid", eid)
         cmp |> set("edit_mode", true)
     playingSound |> set_sound_play_pos(sound.duration)
-    commit()
 
 [export]
 def act(dt: float)
@@ -127,7 +126,6 @@ def spawn_note_timer(level_velocity: float;
             cmp |> set("note_color", drums[i].color)
             cmp |> set("note_index", i)
             cmp |> set("velocity", level_velocity)
-    commit()
 
 [decs(stage = update)]
 def move_note_es(eid: EntityId;
