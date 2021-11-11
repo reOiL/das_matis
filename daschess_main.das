@@ -51,6 +51,11 @@ def initialize(is_hard_reload: bool)
         cmp |> set("level_layer", 0)
         cmp |> set("level_velocity", level1.velocity)
 
+    create_entity <| @ ( eid, cmp )
+        cmp |> set("eid", eid)
+        cmp |> set("stats_miss", 0)
+        cmp |> set("stats_pass", 0)
+
     sound = create_managed_sound(level1.sound)
     playingSound = sound |> play_sound()
     // enable_edit_mode()
@@ -134,6 +139,8 @@ def move_note_es(eid: EntityId;
 
     if int(position.y) >= get_screen_height() - int(size.y * 1.2f)
         delete_entity(eid)
+        query <| $ (var stats_miss: int&)
+            stats_miss++
 
 [decs(stage=collision_update)]
 def note_collision_with_drum(eid: EntityId; note_index: int; position: float2; size: float2)
@@ -144,6 +151,12 @@ def note_collision_with_drum(eid: EntityId; note_index: int; position: float2; s
 
         if position.y - (notePosition.y + size.y) <= 0f
             delete_entity(eid)
+            query <| $ (var stats_pass: int&)
+                stats_pass++
+
+[decs(stage=draw)]
+def draw_stats_es(stats_miss: int; stats_pass: int)
+    text_out(20, 50, "Miss: {stats_miss} / Pass: {stats_pass}", 0xFFFFFF)
 
 [export]
 def draw
