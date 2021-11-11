@@ -1,6 +1,7 @@
 require daslib/media
 require daslib/decs_boost
 require conf/level
+require ecs/editmode_ecs
 // options debugger            // uncomment for debug in VS Code
 // require daslib/debug        // uncomment for debug in VS Code
 
@@ -53,10 +54,21 @@ def initialize(is_hard_reload: bool)
     playingSound = sound |> play_sound()
     commit()
 
+def enable_edit_mode()
+    query <| $ (eid: EntityId; level_layer: int)
+        delete_entity(eid)
+
+    query <| $ (eid: EntityId; note_color: uint)
+        delete_entity(eid)
+
 [export]
 def act(dt: float)
     if get_key(VK_ESCAPE)
         schedule_quit_game()
+
+    if get_key(VK_F1)
+        enable_edit_mode()
+
     timeDelta = dt
     decs_stage("input")
     decs_stage("update")
