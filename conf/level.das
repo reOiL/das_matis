@@ -98,13 +98,6 @@ var level1_layers <- [{ auto
             [[Note _type = BlockType Exist]]
         ]]
     ]];
-    [[NoteLayer timeCode=16.700000763-1.91f, notes=[[ auto
-            [[Note _type = BlockType Empty]];
-            [[Note _type = BlockType Empty]];
-            [[Note _type = BlockType Exist]];
-            [[Note _type = BlockType Empty]]
-        ]]
-    ]];
     [[NoteLayer timeCode=16.889999390-1.91f, notes=[[ auto
             [[Note _type = BlockType Empty]];
             [[Note _type = BlockType Empty]];
@@ -120,24 +113,17 @@ var level1_layers <- [{ auto
         ]]
     ]];
     [[NoteLayer timeCode=17.120000839-1.91f, notes=[[ auto
-            [[Note _type = BlockType Empty]];
-            [[Note _type = BlockType Empty]];
             [[Note _type = BlockType Exist]];
-            [[Note _type = BlockType Empty]]
-        ]]
-    ]];
-    [[NoteLayer timeCode=17.319999695-1.91f, notes=[[ auto
-            [[Note _type = BlockType Empty]];
             [[Note _type = BlockType Empty]];
             [[Note _type = BlockType Empty]];
             [[Note _type = BlockType Exist]]
         ]]
     ]];
-    [[NoteLayer timeCode=17.530000687-1.91f, notes=[[ auto
-            [[Note _type = BlockType Empty]];
-            [[Note _type = BlockType Empty]];
+    [[NoteLayer timeCode=17.319999695-1.91f, notes=[[ auto
             [[Note _type = BlockType Exist]];
-            [[Note _type = BlockType Empty]]
+            [[Note _type = BlockType Empty]];
+            [[Note _type = BlockType Empty]];
+            [[Note _type = BlockType Exist]]
         ]]
     ]];
     [[NoteLayer timeCode=17.729999542-1.91f, notes=[[ auto
@@ -154,28 +140,7 @@ var level1_layers <- [{ auto
             [[Note _type = BlockType Empty]]
         ]]
     ]];
-    [[NoteLayer timeCode=18.270000458-1.91f, notes=[[ auto
-            [[Note _type = BlockType Empty]];
-            [[Note _type = BlockType Exist]];
-            [[Note _type = BlockType Empty]];
-            [[Note _type = BlockType Empty]]
-        ]]
-    ]];
-    [[NoteLayer timeCode=18.750000000-1.91f, notes=[[ auto
-            [[Note _type = BlockType Empty]];
-            [[Note _type = BlockType Exist]];
-            [[Note _type = BlockType Empty]];
-            [[Note _type = BlockType Empty]]
-        ]]
-    ]];
     [[NoteLayer timeCode=18.930000305-1.91f, notes=[[ auto
-            [[Note _type = BlockType Empty]];
-            [[Note _type = BlockType Exist]];
-            [[Note _type = BlockType Exist]];
-            [[Note _type = BlockType Empty]]
-        ]]
-    ]];
-    [[NoteLayer timeCode=19.090000153-1.91f, notes=[[ auto
             [[Note _type = BlockType Empty]];
             [[Note _type = BlockType Exist]];
             [[Note _type = BlockType Exist]];
@@ -189,29 +154,8 @@ var level1_layers <- [{ auto
             [[Note _type = BlockType Empty]]
         ]]
     ]];
-    [[NoteLayer timeCode=19.430000305-1.91f, notes=[[ auto
-            [[Note _type = BlockType Empty]];
-            [[Note _type = BlockType Empty]];
-            [[Note _type = BlockType Exist]];
-            [[Note _type = BlockType Empty]]
-        ]]
-    ]];
     [[NoteLayer timeCode=19.850000381-1.91f, notes=[[ auto
             [[Note _type = BlockType Exist]];
-            [[Note _type = BlockType Empty]];
-            [[Note _type = BlockType Empty]];
-            [[Note _type = BlockType Exist]]
-        ]]
-    ]];
-    [[NoteLayer timeCode=20.020000458-1.91f, notes=[[ auto
-            [[Note _type = BlockType Empty]];
-            [[Note _type = BlockType Empty]];
-            [[Note _type = BlockType Empty]];
-            [[Note _type = BlockType Exist]]
-        ]]
-    ]];
-    [[NoteLayer timeCode=20.170000076-1.91f, notes=[[ auto
-            [[Note _type = BlockType Empty]];
             [[Note _type = BlockType Empty]];
             [[Note _type = BlockType Empty]];
             [[Note _type = BlockType Exist]]
@@ -221,21 +165,7 @@ var level1_layers <- [{ auto
             [[Note _type = BlockType Exist]];
             [[Note _type = BlockType Empty]];
             [[Note _type = BlockType Empty]];
-            [[Note _type = BlockType Empty]]
-        ]]
-    ]];
-    [[NoteLayer timeCode=20.329999924-1.91f, notes=[[ auto
-            [[Note _type = BlockType Empty]];
-            [[Note _type = BlockType Empty]];
-            [[Note _type = BlockType Empty]];
             [[Note _type = BlockType Exist]]
-        ]]
-    ]];
-    [[NoteLayer timeCode=20.370000839-1.91f, notes=[[ auto
-            [[Note _type = BlockType Exist]];
-            [[Note _type = BlockType Empty]];
-            [[Note _type = BlockType Empty]];
-            [[Note _type = BlockType Empty]]
         ]]
     ]];
     [[NoteLayer timeCode=20.500000000-1.91f, notes=[[ auto
@@ -252,17 +182,10 @@ var level1_layers <- [{ auto
             [[Note _type = BlockType Empty]]
         ]]
     ]];
-    [[NoteLayer timeCode=20.819999695-1.91f, notes=[[ auto
-            [[Note _type = BlockType Empty]];
-            [[Note _type = BlockType Empty]];
-            [[Note _type = BlockType Exist]];
-            [[Note _type = BlockType Empty]]
-        ]]
-    ]];
     [[NoteLayer timeCode=20.850000381-1.91f, notes=[[ auto
             [[Note _type = BlockType Empty]];
             [[Note _type = BlockType Exist]];
-            [[Note _type = BlockType Empty]];
+            [[Note _type = BlockType Exist]];
             [[Note _type = BlockType Empty]]
         ]]
     ]];
@@ -308,29 +231,8 @@ var level1_layers <- [{ auto
             [[Note _type = BlockType Empty]]
         ]]
     ]];
-    [[NoteLayer timeCode=22.200000763-1.91f, notes=[[ auto
-            [[Note _type = BlockType Empty]];
-            [[Note _type = BlockType Empty]];
-            [[Note _type = BlockType Exist]];
-            [[Note _type = BlockType Empty]]
-        ]]
-    ]];
-    [[NoteLayer timeCode=22.370000839-1.91f, notes=[[ auto
-            [[Note _type = BlockType Empty]];
-            [[Note _type = BlockType Empty]];
-            [[Note _type = BlockType Exist]];
-            [[Note _type = BlockType Empty]]
-        ]]
-    ]];
     [[NoteLayer timeCode=22.700000763-1.91f, notes=[[ auto
             [[Note _type = BlockType Exist]];
-            [[Note _type = BlockType Empty]];
-            [[Note _type = BlockType Empty]];
-            [[Note _type = BlockType Exist]]
-        ]]
-    ]];
-    [[NoteLayer timeCode=22.870000839-1.91f, notes=[[ auto
-            [[Note _type = BlockType Empty]];
             [[Note _type = BlockType Empty]];
             [[Note _type = BlockType Empty]];
             [[Note _type = BlockType Exist]]
@@ -368,6 +270,62 @@ var level1_layers <- [{ auto
             [[Note _type = BlockType Exist]];
             [[Note _type = BlockType Empty]];
             [[Note _type = BlockType Empty]];
+            [[Note _type = BlockType Exist]]
+        ]]
+    ]];
+        [[NoteLayer timeCode=25.059999466-1.91f, notes=[[ auto
+            [[Note _type = BlockType Exist]];
+            [[Note _type = BlockType Empty]];
+            [[Note _type = BlockType Empty]];
+            [[Note _type = BlockType Exist]]
+        ]]
+    ]];
+    [[NoteLayer timeCode=25.090000153-1.91f, notes=[[ auto
+            [[Note _type = BlockType Empty]];
+            [[Note _type = BlockType Exist]];
+            [[Note _type = BlockType Exist]];
+            [[Note _type = BlockType Empty]]
+        ]]
+    ]];
+    [[NoteLayer timeCode=25.340000153-1.91f, notes=[[ auto
+            [[Note _type = BlockType Empty]];
+            [[Note _type = BlockType Exist]];
+            [[Note _type = BlockType Exist]];
+            [[Note _type = BlockType Empty]]
+        ]]
+    ]];
+    [[NoteLayer timeCode=25.379999161-1.91f, notes=[[ auto
+            [[Note _type = BlockType Exist]];
+            [[Note _type = BlockType Empty]];
+            [[Note _type = BlockType Empty]];
+            [[Note _type = BlockType Exist]]
+        ]]
+    ]];
+    [[NoteLayer timeCode=25.629999161-1.91f, notes=[[ auto
+            [[Note _type = BlockType Exist]];
+            [[Note _type = BlockType Empty]];
+            [[Note _type = BlockType Empty]];
+            [[Note _type = BlockType Exist]]
+        ]]
+    ]];
+    [[NoteLayer timeCode=27.180000305-1.91f, notes=[[ auto
+            [[Note _type = BlockType Exist]];
+            [[Note _type = BlockType Empty]];
+            [[Note _type = BlockType Empty]];
+            [[Note _type = BlockType Exist]]
+        ]]
+    ]];
+    [[NoteLayer timeCode=27.389999390-1.91f, notes=[[ auto
+            [[Note _type = BlockType Exist]];
+            [[Note _type = BlockType Empty]];
+            [[Note _type = BlockType Empty]];
+            [[Note _type = BlockType Exist]]
+        ]]
+    ]];
+    [[NoteLayer timeCode=27.590000153-1.91f, notes=[[ auto
+            [[Note _type = BlockType Exist]];
+            [[Note _type = BlockType Exist]];
+            [[Note _type = BlockType Exist]];
             [[Note _type = BlockType Exist]]
         ]]
     ]]
