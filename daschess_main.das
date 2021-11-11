@@ -34,8 +34,7 @@ struct NoteLayer
 
 struct Level
     sound : string
-    layers: array<NoteLayer>
-
+    velocity: float
 
 var level1_layers <- [{ auto
     [[NoteLayer timeCode=2f, notes=[[ auto
@@ -47,7 +46,7 @@ var level1_layers <- [{ auto
     ]]
 }]
 
-var level1 <- [[Level sound="sound/promo.mp3"]]
+var level1 <- [[Level sound="sound/promo.mp3", velocity=300f]]
 
 var timeDelta = 0f
 
@@ -73,9 +72,8 @@ def initialize(is_hard_reload: bool)
 
     create_entity <| @ ( eid, cmp )
         cmp |> set("eid", eid)
-        cmp |> set("note_spawn_timer", 0f)
-        cmp |> set("note_spawn_time", 0.5f)
         cmp |> set("level_layer", 0)
+        cmp |> set("level_velocity", level1.velocity)
 
     sound = create_managed_sound(level1.sound)
     playingSound = sound |> play_sound()
@@ -107,7 +105,8 @@ def draw_note_es(note_color: uint; position: float2; size: float2)
     fill_rect(position.x, position.y, size.x, size.y, note_color)
 
 [decs(stage = update)]
-def spawn_note_timer(var note_spawn_time: float; var note_spawn_timer: float&; var level_layer: int&)
+def spawn_note_timer(level_velocity: float;
+                     var level_layer: int&)
     if uint(level_layer) >= uint(length(level1_layers))
         return
 
@@ -128,11 +127,16 @@ def spawn_note_timer(var note_spawn_time: float; var note_spawn_timer: float&; v
             cmp |> set("position", startPos + float2((150 + 30) * i, 0))
             cmp |> set("note_color", drums[i].color)
             cmp |> set("note_index", i)
+            cmp |> set("velocity", level_velocity)
     commit()
 
 [decs(stage = update)]
-def move_note_es(eid: EntityId; note_color: uint; var position: float2&; var size: float2)
-    position.y += 200f * timeDelta
+def move_note_es(eid: EntityId;
+                 note_color: uint;
+                 velocity: float;
+                 var position: float2&;
+                 var size: float2)
+    position.y += velocity * timeDelta
 
     if int(position.y) >= get_screen_height() - int(size.y * 1.2f)
         delete_entity(eid)
