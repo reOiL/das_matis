@@ -12,6 +12,7 @@ struct DrumPad
     keyName: string
     color: uint
     pressed: bool
+    beforePressed: bool
 
 var drums <- [{ auto
     [[DrumPad key=VK_A, color=0x1DBAC5, pressed=false, keyName="A" ]];
@@ -37,7 +38,7 @@ struct Level
 
 
 var level1_layers <- [{ auto
-    [[NoteLayer timeCode=10f, notes=[[ auto
+    [[NoteLayer timeCode=2f, notes=[[ auto
             [[Note _type = BlockType Empty]];
             [[Note _type = BlockType Exist]];
             [[Note _type = BlockType Exist]];
@@ -66,6 +67,7 @@ def initialize(is_hard_reload: bool)
         create_entity <| @ ( eid, cmp )
             cmp |> set("eid", eid)
             cmp |> set("size", size)
+            cmp |> set("drum_index", i)
             cmp |> set("position", startPos + float2((150 + 30) * i, 0))
             cmp |> apply_decs_template(drums[i])
 
@@ -86,6 +88,7 @@ def act(dt: float)
     timeDelta = dt
     decs_stage("input")
     decs_stage("update")
+    decs_stage("collision_update")
 
 [decs(stage = draw)]
 def draw_drumpad_es(position: float2; size: float2; drum: DrumPad)
@@ -96,6 +99,7 @@ def draw_drumpad_es(position: float2; size: float2; drum: DrumPad)
 
 [decs(stage = input)]
 def input_drumpad_es(var drum: DrumPad&)
+    drum.beforePressed = drum.pressed
     drum.pressed = get_key(drum.key)
 
 [decs(stage = draw)]
@@ -123,20 +127,31 @@ def spawn_note_timer(var note_spawn_time: float; var note_spawn_timer: float&; v
             cmp |> set("size", size)
             cmp |> set("position", startPos + float2((150 + 30) * i, 0))
             cmp |> set("note_color", drums[i].color)
+            cmp |> set("note_index", i)
     commit()
 
 [decs(stage = update)]
 def move_note_es(eid: EntityId; note_color: uint; var position: float2&; var size: float2)
     position.y += 200f * timeDelta
 
-    if int(position.y) >= get_screen_height() - int(size.y * 2f)
+    if int(position.y) >= get_screen_height() - int(size.y * 1.2f)
         delete_entity(eid)
+
+[decs(stage=collision_update)]
+def note_collision_with_drum(eid: EntityId; note_index: int; position: float2; size: float2)
+    let notePosition = position
+    query <| $ (drum_index: int; position: float2; drum: DrumPad)
+        if drum_index != note_index || !drum.pressed || drum.beforePressed
+            return
+
+        if position.y - (notePosition.y + size.y) <= 0f
+            delete_entity(eid)
 
 [export]
 def draw
     var playPos = playingSound |> get_sound_play_pos
     var text = "No music play. Reload game(Ctrl+F5)"
     if sound.duration > 0f
-        text = "Progress: {(playPos / sound.duration) * 100f}"
+        text = "Progress: {playPos} of {sound.duration}"
     text_out(20, 20, text, 0xFFFFFF)
     decs_stage("draw")
