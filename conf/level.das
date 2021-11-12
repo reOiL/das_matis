@@ -319,4 +319,4 @@ var level1_layers <- [{ auto
 
 
 
-var level1 <- [[Level sound="sound/promo.mp3", velocity=300f]]
+var level1 <- [[Level sound="sound/promo.wav", velocity=300f]]
